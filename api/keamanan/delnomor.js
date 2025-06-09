@@ -27,6 +27,10 @@ module.exports = function (app, globalApiKey) {
         return res.json({ status: false, error: 'Parameter nomor wajib diisi' });
       }
 
+      if (!/^62\d{6,}$/.test(nomor)) {
+        return res.json({ status: false, error: 'Format nomor tidak valid' });
+      }
+
       const data = loadData();
 
       if (!data.includes(nomor)) {
@@ -42,7 +46,8 @@ module.exports = function (app, globalApiKey) {
         sisa_data: newData
       });
     } catch (err) {
-      res.status(500).json({ status: false, error: err.message });
+      console.error('Error /delnomor:', err);
+      res.status(500).json({ status: false, error: 'Internal server error' });
     }
   });
 };

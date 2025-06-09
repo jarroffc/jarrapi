@@ -1,25 +1,26 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 const dbPath = path.join(__dirname, './nomor.json');
 
-function loadData() {
+async function loadData() {
   try {
-    return JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+    const file = await fs.readFile(dbPath, 'utf8');
+    return JSON.parse(file);
   } catch {
     return [];
   }
 }
 
-function saveData(data) {
-  fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+async function saveData(data) {
+  await fs.writeFile(dbPath, JSON.stringify(data, null, 2));
 }
 
 module.exports = function (app) {
-  app.get('/addnomor', (req, res) => {
+  app.get('/addnomor', async (req, res) => {
     try {
       const { apikey, nomor } = req.query;
 
-      if (!global.apikey.includes(apikey)) {
+      if (!apikey || !global.apikey.includes(apikey)) {
         return res.json({ status: false, error: 'Apikey invalid' });
       }
 
@@ -27,14 +28,18 @@ module.exports = function (app) {
         return res.json({ status: false, error: 'Parameter nomor wajib diisi' });
       }
 
-      const data = loadData();
+      if (!/^62\d{6,}$/.test(nomor)) {
+        return res.json({ status: false, error: 'Format nomor harus diawali dengan 62' });
+      }
+
+      const data = await loadData();
 
       if (data.includes(nomor)) {
         return res.json({ status: false, error: 'Nomor sudah ada' });
       }
 
       data.push(nomor);
-      saveData(data);
+      await saveData(data);
 
       res.json({
         status: true,
@@ -42,7 +47,8 @@ module.exports = function (app) {
         data: nomor
       });
     } catch (err) {
-      res.status(500).json({ status: false, error: err.message });
+      console.error('Error /addnomor:', err);
+      res.status(500).json({ status: false, error: 'Internal server error' });
     }
   });
 };
