@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
-const dbPath = path.join(__dirname, '/api/keamanan/nomor.json');
+const dbPath = path.join(__dirname, 'nomor.json');
 
 async function loadData() {
   try {
