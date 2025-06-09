@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const dbPath = path.join(__dirname, './nomor.json');
-const globalApiKey = global.apikey
+
 function loadData() {
   try {
     return JSON.parse(fs.readFileSync(dbPath, 'utf8'));
