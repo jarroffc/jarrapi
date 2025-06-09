@@ -11,7 +11,7 @@ function loadData() {
 }
 
 module.exports = function (app, globalApiKey) {
-  app.get('/listnomor', (req, res) => {
+  app.get('/kemanan/listnomor', (req, res) => {
     try {
       const { apikey } = req.query;
 

@@ -16,7 +16,7 @@ async function saveData(data) {
 }
 
 module.exports = function (app) {
-  app.get('/addnomor', async (req, res) => {
+  app.get('/kemanan/addnomor', async (req, res) => {
     try {
       const { apikey, nomor } = req.query;
 
