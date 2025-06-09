@@ -558,19 +558,19 @@
       "name": "Add Nomor",
       "desc": "Menambahkan nomor ke database",
       "status": "Active",
-      "path": "/kemanan/addnomor?apikey=&nomor="
+      "path": "/keamanan/addnomor?apikey=&nomor="
     },
     {
       "name": "List Nomor",
       "desc": "Menampilkan list nomor",
       "status": "Active",
-      "path": "/kemanan/listnomor?apikey="
+      "path": "/keamanan/listnomor?apikey="
     },
     {
       "name": "Delete Nomor",
       "desc": "Menghapuskan nomor",
       "status": "Active",
-      "path": "/kemanan/delnomor?apikey=&nomor="
+      "path": "/keamanan/delnomor?apikey=&nomor="
     }
   ],
   "api": [
