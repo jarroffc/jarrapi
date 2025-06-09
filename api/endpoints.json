@@ -553,6 +553,26 @@
       "path": "/game/tebakheroml?apikey="
     }
   ],
+    "keamanan": [
+    {
+      "name": "Add Nomor",
+      "desc": "Menambahkan nomor ke database",
+      "status": "Active",
+      "path": "/kemanan/addnomor?apikey=
+    },
+    {
+      "name": "List Nomor",
+      "desc": "Menampilkan list nomor",
+      "status": "Active",
+      "path": "/kemanan/listnomor?apikey=
+    },
+    {
+      "name": "Delete Nomor",
+      "desc": "Menghapuskan nomor",
+      "status": "Active",
+      "path": "/kemanan/delnomor?apikey=
+    }
+  ],
   "api": [
     {
       "name": "Status Api",
