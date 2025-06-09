@@ -20,7 +20,8 @@ module.exports = function (app) {
     try {
       const { apikey, nomor } = req.query;
 
-      if (!apikey || !global.apikey.includes(apikey)) {
+      const apikeyList = Array.isArray(global.apikey) ? global.apikey : [global.apikey];
+      if (!apikeyList.includes(apikey)) {
         return res.json({ status: false, error: 'Apikey invalid' });
       }
 
@@ -29,7 +30,7 @@ module.exports = function (app) {
       }
 
       if (!/^62\d{6,}$/.test(nomor)) {
-        return res.json({ status: false, error: 'Format nomor harus diawali dengan 62' });
+        return res.json({ status: false, error: 'Format nomor harus diawali dengan 62 dan angka valid' });
       }
 
       const data = await loadData();
@@ -47,7 +48,7 @@ module.exports = function (app) {
         data: nomor
       });
     } catch (err) {
-      console.error('Error /addnomor:', err);
+      console.error('Error /keamanan/addnomor:', err);
       res.status(500).json({ status: false, error: 'Internal server error' });
     }
   });

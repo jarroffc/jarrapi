@@ -1,25 +1,27 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 const dbPath = path.join(__dirname, './nomor.json');
 
-function loadData() {
+async function loadData() {
   try {
-    return JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+    const file = await fs.readFile(dbPath, 'utf8');
+    return JSON.parse(file);
   } catch {
     return [];
   }
 }
 
-module.exports = function (app, globalApiKey) {
-  app.get('/keamanan/listnomor', (req, res) => {
+module.exports = function (app) {
+  app.get('/keamanan/listnomor', async (req, res) => {
     try {
       const { apikey } = req.query;
 
-      if (!globalApiKey.includes(apikey)) {
+      const apikeyList = Array.isArray(global.apikey) ? global.apikey : [global.apikey];
+      if (!apikeyList.includes(apikey)) {
         return res.json({ status: false, error: 'Apikey invalid' });
       }
 
-      const data = loadData();
+      const data = await loadData();
 
       res.json({
         status: true,
@@ -27,7 +29,8 @@ module.exports = function (app, globalApiKey) {
         data: data
       });
     } catch (err) {
-      res.status(500).json({ status: false, error: err.message });
+      console.error('Error /keamanan/listnomor:', err);
+      res.status(500).json({ status: false, error: 'Internal server error' });
     }
   });
 };

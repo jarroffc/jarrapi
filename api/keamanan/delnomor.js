@@ -1,25 +1,27 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 const dbPath = path.join(__dirname, './nomor.json');
 
-function loadData() {
+async function loadData() {
   try {
-    return JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+    const file = await fs.readFile(dbPath, 'utf8');
+    return JSON.parse(file);
   } catch {
     return [];
   }
 }
 
-function saveData(data) {
-  fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
+async function saveData(data) {
+  await fs.writeFile(dbPath, JSON.stringify(data, null, 2));
 }
 
-module.exports = function (app, globalApiKey) {
-  app.get('/keamanan/delnomor', (req, res) => {
+module.exports = function (app) {
+  app.get('/keamanan/delnomor', async (req, res) => {
     try {
       const { apikey, nomor } = req.query;
 
-      if (!globalApiKey.includes(apikey)) {
+      const apikeyList = Array.isArray(global.apikey) ? global.apikey : [global.apikey];
+      if (!apikeyList.includes(apikey)) {
         return res.json({ status: false, error: 'Apikey invalid' });
       }
 
@@ -27,18 +29,14 @@ module.exports = function (app, globalApiKey) {
         return res.json({ status: false, error: 'Parameter nomor wajib diisi' });
       }
 
-      if (!/^62\d{6,}$/.test(nomor)) {
-        return res.json({ status: false, error: 'Format nomor tidak valid' });
-      }
-
-      const data = loadData();
+      const data = await loadData();
 
       if (!data.includes(nomor)) {
         return res.json({ status: false, error: 'Nomor tidak ditemukan dalam database' });
       }
 
       const newData = data.filter(n => n !== nomor);
-      saveData(newData);
+      await saveData(newData);
 
       res.json({
         status: true,
@@ -46,7 +44,7 @@ module.exports = function (app, globalApiKey) {
         sisa_data: newData
       });
     } catch (err) {
-      console.error('Error /delnomor:', err);
+      console.error('Error /keamanan/delnomor:', err);
       res.status(500).json({ status: false, error: 'Internal server error' });
     }
   });
