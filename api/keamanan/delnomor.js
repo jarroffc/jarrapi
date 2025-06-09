@@ -15,7 +15,7 @@ function saveData(data) {
 }
 
 module.exports = function (app, globalApiKey) {
-  app.get('/kemanan/delnomor', (req, res) => {
+  app.get('/keamanan/delnomor', (req, res) => {
     try {
       const { apikey, nomor } = req.query;
 
