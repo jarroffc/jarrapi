@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
-const dbPath = path.join(__dirname, './nomor.json');
+const dbPath = path.join(__dirname, 'nomor.json');
 
 async function loadData() {
   try {
@@ -20,8 +20,7 @@ module.exports = function (app) {
     try {
       const { apikey, nomor } = req.query;
 
-      const apikeyList = Array.isArray(global.apikey) ? global.apikey : [global.apikey];
-      if (!apikeyList.includes(apikey)) {
+      if (!global.apikey || !global.apikey.includes(apikey)) {
         return res.json({ status: false, error: 'Apikey invalid' });
       }
 
@@ -30,7 +29,7 @@ module.exports = function (app) {
       }
 
       if (!/^62\d{6,}$/.test(nomor)) {
-        return res.json({ status: false, error: 'Format nomor harus diawali dengan 62 dan angka valid' });
+        return res.json({ status: false, error: 'Format nomor harus diawali dengan 62' });
       }
 
       const data = await loadData();
@@ -48,7 +47,7 @@ module.exports = function (app) {
         data: nomor
       });
     } catch (err) {
-      console.error('Error /keamanan/addnomor:', err);
+      console.error('ERROR addnomor:', err.message);
       res.status(500).json({ status: false, error: 'Internal server error' });
     }
   });

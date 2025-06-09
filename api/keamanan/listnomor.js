@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
-const dbPath = path.join(__dirname, './nomor.json');
+const dbPath = path.join(__dirname, 'nomor.json');
 
 async function loadData() {
   try {
@@ -16,8 +16,7 @@ module.exports = function (app) {
     try {
       const { apikey } = req.query;
 
-      const apikeyList = Array.isArray(global.apikey) ? global.apikey : [global.apikey];
-      if (!apikeyList.includes(apikey)) {
+      if (!global.apikey || !global.apikey.includes(apikey)) {
         return res.json({ status: false, error: 'Apikey invalid' });
       }
 
@@ -29,7 +28,7 @@ module.exports = function (app) {
         data: data
       });
     } catch (err) {
-      console.error('Error /keamanan/listnomor:', err);
+      console.error('ERROR listnomor:', err.message);
       res.status(500).json({ status: false, error: 'Internal server error' });
     }
   });

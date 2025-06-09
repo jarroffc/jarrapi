@@ -1,6 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
-const dbPath = path.join(__dirname, './nomor.json');
+const dbPath = path.join(__dirname, 'nomor.json');
 
 async function loadData() {
   try {
@@ -20,8 +20,7 @@ module.exports = function (app) {
     try {
       const { apikey, nomor } = req.query;
 
-      const apikeyList = Array.isArray(global.apikey) ? global.apikey : [global.apikey];
-      if (!apikeyList.includes(apikey)) {
+      if (!global.apikey || !global.apikey.includes(apikey)) {
         return res.json({ status: false, error: 'Apikey invalid' });
       }
 
@@ -44,7 +43,7 @@ module.exports = function (app) {
         sisa_data: newData
       });
     } catch (err) {
-      console.error('Error /keamanan/delnomor:', err);
+      console.error('ERROR delnomor:', err.message);
       res.status(500).json({ status: false, error: 'Internal server error' });
     }
   });
